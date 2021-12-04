@@ -10,10 +10,13 @@ Methods for storing and loading configurations are also included.
 # numbers of inputs and outputs that every neural net will have
 var num_inputs: int
 var num_outputs: int
+var arr_hidden_layer: Array
 # A path to the agent_body - the scene that represents the player, providing the
 # sense(), act() and get_fitness() functions. This parameter is set by the user
 # when a new GeneticAlgorithm node gets instanced.
-var agent_body_path: String
+#var agent_body_path: String
+# path to the car scene that will be controlled by the AI
+var agent_body_path = "res://demos/cars/car/Car.tscn"
 
 # ----- change visibility of agent bodies
 # If rendering costs too much performance, or clutter is to be avoided, agent.body
@@ -59,7 +62,7 @@ var chain_threshold = 3
 # ----- general
 # If set to true, ga will create a child node that will spawn all gui elements,
 # and a highlighter will be created for every agent
-var use_gui: bool
+var use_gui: bool  = true
 
 # ----- highlighter parameters
 # enable the highlighter. Highlighter objects are still created if disabled, however
@@ -130,7 +133,7 @@ var prob_direct_link = [0, 0.2]
 # disable mutations that produce feed back links
 var no_feed_back = false
 # number of attempts to find a neuron if there is no guarantee one will be found
-var num_tries_find_link = 10
+var num_tries_find_link = 50
 
 # ----- mutating weights
 # probabilities of changing the weight of a link. This mutation is applied on every
@@ -213,7 +216,7 @@ var activate_inputs = false
 
 # ----- Network drawing
 # colors of neuron types, when displaying a network. Map to NEURON_TYPE enum
-var neuron_colors = [Color.turquoise, Color.teal, Color.seashell, Color.tomato]
+var neuron_colors = [Color.turquoise, Color.teal, Color.purple, Color.tomato]
 # When coloring weights, weights >= num are colored red, weights <= are blue, 
 # and everything inbetween uses this num as reference.
 var weight_max_color = 4
@@ -232,117 +235,117 @@ enum SPLIT_MEMBERS{from_link, neuron_id, to_link}
 # ---------------------------------------------------------------
 
 func load_config(config_name: String) -> void:
-    """Loads a valid file stored in user://param_configs/ that has a .cfg extension.
-    If no configs have been saved yet, the /params_configs directory is made, and
-    a config named 'Default.cfg' is saved with the properties of this class.
-    """
-    var dir = Directory.new()
-    var config = ConfigFile.new()
-    # If no param configs have been saved yet, save the settings from this file as Default
-    if dir.open("user://param_configs") == ERR_INVALID_PARAMETER:
-        dir.make_dir("user://param_configs")
-        save_config("Default")
-    # try to open the specified file, break execution if it doesn't exist
-    else:
-        var err = config.load("user://param_configs/%s.cfg" % config_name)
-        if err == OK:
-            for section in config.get_sections():
-                for property in config.get_section_keys(section):
-                    set(property, config.get_value(section, property))
-        else:
-            push_error("Could not load config, error code: %d" % err); breakpoint
+	"""Loads a valid file stored in user://param_configs/ that has a .cfg extension.
+	If no configs have been saved yet, the /params_configs directory is made, and
+	a config named 'Default.cfg' is saved with the properties of this class.
+	"""
+	var dir = Directory.new()
+	var config = ConfigFile.new()
+	# If no param configs have been saved yet, save the settings from this file as Default
+	if dir.open("user://param_configs") == ERR_INVALID_PARAMETER:
+		dir.make_dir("user://param_configs")
+		save_config("Default")
+	# try to open the specified file, break execution if it doesn't exist
+	else:
+		var err = config.load("user://param_configs/%s.cfg" % config_name)
+		if err == OK:
+			for section in config.get_sections():
+				for property in config.get_section_keys(section):
+					set(property, config.get_value(section, property))
+		else:
+			push_error("Could not load config, error code: %d" % err); breakpoint
 
 
 func save_config(config_name: String) -> void:
-    """Saves the properties of this instance of Params as a .cfg file under 
-    user://param_configs/.
-    """
-    var config = ConfigFile.new()
-    for property in get_property_list():
-        # cannot use match statement because array patterns have to match completely
-        var has_property = false
-        for section_key in property_dict.keys():
-            if property_dict[section_key].has(property.name):
-                config.set_value(section_key, property.name, get(property.name))
-                has_property = true
-                break
-        if not has_property and not ignore_properties.has(property.name):
-            print("property %s is missing in the property dict" % property.name)
-    config.save("user://param_configs/%s.cfg" % config_name)
+	"""Saves the properties of this instance of Params as a .cfg file under 
+	user://param_configs/.
+	"""
+	var config = ConfigFile.new()
+	for property in get_property_list():
+		# cannot use match statement because array patterns have to match completely
+		var has_property = false
+		for section_key in property_dict.keys():
+			if property_dict[section_key].has(property.name):
+				config.set_value(section_key, property.name, get(property.name))
+				has_property = true
+				break
+		if not has_property and not ignore_properties.has(property.name):
+			print("property %s is missing in the property dict" % property.name)
+	config.save("user://param_configs/%s.cfg" % config_name)
 
 
 # An array listing all the properties of this class that should be excluded from config
 var ignore_properties = [
-    "Node", "Pause", "owner", "custom_multiplayer", "Script", "__meta__",
-    "Script Variables", "editor_description", "_import_path", "pause_mode",
-    "name", "filename", "multiplayer", "process_priority", "script", "num_inputs",
-    "num_outputs", "agent_body_path", "visibility_options", "default_visibility",
-    "neuron_colors", "weight_max_color", "num_tries_find_link", "ignore_properties",
-    "property_dict"
+	"Node", "Pause", "owner", "custom_multiplayer", "Script", "__meta__",
+	"Script Variables", "editor_description", "_import_path", "pause_mode",
+	"name", "filename", "multiplayer", "process_priority", "script", "num_inputs",
+	"num_outputs", "agent_body_path", "visibility_options", "default_visibility",
+	"neuron_colors", "weight_max_color", "num_tries_find_link", "ignore_properties",
+	"property_dict"
 ]
 
 # Assigns all properties used in the config to section keys
 var property_dict = {
-    "Genetic Algorithm settings" : [
-        "population_size",
-        "print_new_generation"
-    ],
-    "network constraints" : [
-        "num_initial_links",
-        "max_neuron_amt",
-        "prevent_chaining",
-        "chain_threshold"
-    ],
-    "GUI and highlighter" : [
-        "use_gui",
-        "is_highlighter_enabled",
-        "highlighter_offset",
-        "highlighter_radius",
-        "highlighter_color",
-        "highlighter_width"
-    ],
-    "Crossover" : [
-        "prob_asex",
-        "gene_swap_rate",
-        "random_mating"
-    ],
-    "Neuron mutations" : [
-        "prob_add_neuron",
-        "default_curve",
-        "prob_activation_mut",
-        "activation_shift_deviation"
-    ],
-    "Link mutations" : [
-        "prob_add_link",
-        "prob_disable_link",
-        "prob_loop_link",
-        "prob_direct_link",
-        "no_feed_back",
-        "prob_weight_mut",
-        "w_range",
-        "prob_weight_replaced",
-        "weight_shift_deviation",
-    ],
-    "Speciation" : [
-        "species_boundary",
-        "coeff_matched",
-        "coeff_disjoint",
-        "coeff_excess"
-    ],
-    "Species behavior" : [
-        "enough_gens_to_change_things",
-        "allowed_gens_no_improvement",
-        "old_age",
-        "youth_bonus",
-        "old_penalty",
-        "update_species_rep",
-        "leader_is_rep",
-        "spawn_cutoff",
-        "selection_threshold",
-    ],
-    "Neural network settings" : [
-        "is_runtype_active",
-        "curr_activation_func",
-        "activate_inputs",
-    ],
+	"Genetic Algorithm settings" : [
+		"population_size",
+		"print_new_generation"
+	],
+	"network constraints" : [
+		"num_initial_links",
+		"max_neuron_amt",
+		"prevent_chaining",
+		"chain_threshold"
+	],
+	"GUI and highlighter" : [
+		"use_gui",
+		"is_highlighter_enabled",
+		"highlighter_offset",
+		"highlighter_radius",
+		"highlighter_color",
+		"highlighter_width"
+	],
+	"Crossover" : [
+		"prob_asex",
+		"gene_swap_rate",
+		"random_mating"
+	],
+	"Neuron mutations" : [
+		"prob_add_neuron",
+		"default_curve",
+		"prob_activation_mut",
+		"activation_shift_deviation"
+	],
+	"Link mutations" : [
+		"prob_add_link",
+		"prob_disable_link",
+		"prob_loop_link",
+		"prob_direct_link",
+		"no_feed_back",
+		"prob_weight_mut",
+		"w_range",
+		"prob_weight_replaced",
+		"weight_shift_deviation",
+	],
+	"Speciation" : [
+		"species_boundary",
+		"coeff_matched",
+		"coeff_disjoint",
+		"coeff_excess"
+	],
+	"Species behavior" : [
+		"enough_gens_to_change_things",
+		"allowed_gens_no_improvement",
+		"old_age",
+		"youth_bonus",
+		"old_penalty",
+		"update_species_rep",
+		"leader_is_rep",
+		"spawn_cutoff",
+		"selection_threshold",
+	],
+	"Neural network settings" : [
+		"is_runtype_active",
+		"curr_activation_func",
+		"activate_inputs",
+	],
 }

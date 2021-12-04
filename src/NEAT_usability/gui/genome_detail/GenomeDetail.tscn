@@ -103,5 +103,12 @@ text = "Save Network"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Button" parent="WindowLayout" index="2"]
+visible = false
+margin_top = 353.0
+margin_right = 440.0
+margin_bottom = 373.0
+
 [connection signal="toggled" from="WindowLayout/GenomeDetailContent/ContentSeperator/HBoxContainer/HighlightToggle" to="." method="_on_HighlightToggle_toggled"]
 [connection signal="button_down" from="WindowLayout/GenomeDetailContent/ContentSeperator/HBoxContainer/SaveNetwork" to="." method="_on_SaveNetwork_button_down"]

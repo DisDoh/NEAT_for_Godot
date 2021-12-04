@@ -14,32 +14,32 @@ onready var dir = Directory.new()
 
 
 func _ready() -> void:
-    """Connect the button signals to appropriate loading methods
-    """ 
-    launchers.get_node("CarLauncher").connect("pressed", self, "load_car_scene")
-    launchers.get_node("LanderLauncher").connect("pressed", self, "load_lander_scene")
-    launchers.get_node("XorLauncher").connect("pressed", self, "load_xor_scene")
+	"""Connect the button signals to appropriate loading methods
+	""" 
+	launchers.get_node("CarLauncher").connect("pressed", self, "load_car_scene")
+	launchers.get_node("LanderLauncher").connect("pressed", self, "load_lander_scene")
+	launchers.get_node("XorLauncher").connect("pressed", self, "load_xor_scene")
 
 
 func load_car_scene() -> void:
-    """Copy car params to user://param_configs/ and switch to car menu scene.
-    """
-    dir.copy("res://demos/cars/car_params.cfg",
-             "user://param_configs/car_params.cfg")
-    get_tree().change_scene("res://demos/cars/splash_screen/CarSplash.tscn")
+	"""Copy car params to user://param_configs/ and switch to car menu scene.
+	"""
+	dir.copy("res://demos/cars/car_params.cfg",
+			 "user://param_configs/car_params.cfg")
+	get_tree().change_scene("res://demos/cars/splash_screen/CarSplash.tscn")
 
 
 func load_lander_scene() -> void:
-    """Copy lander params to user://param_configs/ and switch to lander scene.
-    """
-    dir.copy("res://demos/lunar_lander/lander_params.cfg",
-             "user://param_configs/lander_params.cfg")
-    get_tree().change_scene("res://demos/lunar_lander/LanderMain.tscn")
+	"""Copy lander params to user://param_configs/ and switch to lander scene.
+	"""
+	dir.copy("res://demos/lunar_lander/lander_params.cfg",
+			 "user://param_configs/lander_params.cfg")
+	get_tree().change_scene("res://demos/lunar_lander/LanderMain.tscn")
 
 
 func load_xor_scene() -> void:
-    """Copy XOR params to user://param_configs/ and switch to XOR scene.
-    """
-    dir.copy("res://demos/xor/xor_params.cfg",
-             "user://param_configs/xor_params.cfg")
-    get_tree().change_scene("res://demos/xor/XorMain.tscn")
+	"""Copy XOR params to user://param_configs/ and switch to XOR scene.
+	"""
+	dir.copy("res://demos/xor/xor_params.cfg",
+			 "user://param_configs/xor_params.cfg")
+	get_tree().change_scene("res://demos/xor/XorMain.tscn")

@@ -24,9 +24,7 @@ position = Vector2( -1509.65, -1661.33 )
 [node name="Center" type="Position2D" parent="."]
 position = Vector2( -60.5889, -383.029 )
 
-[node name="Bounds" type="Area2D" parent="." groups=[
-"bounds",
-]]
+[node name="Bounds" type="Area2D" parent="." groups=["bounds"]]
 position = Vector2( 3.14981, -0.630005 )
 
 [node name="InnerTrackCol1" type="CollisionPolygon2D" parent="Bounds"]

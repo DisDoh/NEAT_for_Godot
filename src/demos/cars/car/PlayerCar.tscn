@@ -4,7 +4,6 @@
 [ext_resource path="res://demos/cars/car/player_car.png" type="Texture" id=2]
 [ext_resource path="res://demos/cars/car/explosion.png" type="Texture" id=3]
 
-
 [sub_resource type="AtlasTexture" id=1]
 flags = 4
 atlas = ExtResource( 3 )
@@ -171,4 +170,5 @@ __meta__ = {
 }
 
 [node name="Camera2D" type="Camera2D" parent="."]
+
 [connection signal="animation_finished" from="Explosion" to="." method="_on_Explosion_animation_finished"]

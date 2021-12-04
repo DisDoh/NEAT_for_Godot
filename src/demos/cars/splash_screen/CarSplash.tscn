@@ -90,24 +90,24 @@ alignment = 1
 margin_left = 281.0
 margin_right = 499.0
 margin_bottom = 465.0
+custom_fonts/font = ExtResource( 2 )
 custom_styles/hover = SubResource( 3 )
 custom_styles/pressed = SubResource( 4 )
 custom_styles/focus = SubResource( 5 )
 custom_styles/disabled = SubResource( 6 )
 custom_styles/normal = SubResource( 7 )
-custom_fonts/font = ExtResource( 2 )
 text = "Train Cars"
 
 [node name="RacingMode" type="Button" parent="MarginContainer/VBoxContainer/Options"]
 margin_left = 529.0
 margin_right = 742.0
 margin_bottom = 465.0
+custom_fonts/font = ExtResource( 2 )
 custom_styles/hover = SubResource( 3 )
 custom_styles/pressed = SubResource( 4 )
 custom_styles/focus = SubResource( 5 )
 custom_styles/disabled = SubResource( 6 )
 custom_styles/normal = SubResource( 7 )
-custom_fonts/font = ExtResource( 2 )
 text = "Race Cars"
 
 [node name="Tracks" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Options"]
@@ -131,9 +131,9 @@ rect_min_size = Vector2( 284, 300 )
 
 [node name="Opponents" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Options"]
 visible = false
-margin_left = 315.0
-margin_right = 708.0
-margin_bottom = 861.0
+margin_left = 561.0
+margin_right = 954.0
+margin_bottom = 465.0
 
 [node name="ChooseOpponents" type="Label" parent="MarginContainer/VBoxContainer/Options/Opponents"]
 margin_right = 393.0
@@ -154,10 +154,10 @@ visible = false
 margin_top = 543.0
 margin_right = 1024.0
 margin_bottom = 600.0
+custom_fonts/font = ExtResource( 2 )
 custom_styles/hover = SubResource( 8 )
 custom_styles/pressed = SubResource( 9 )
 custom_styles/focus = SubResource( 10 )
 custom_styles/disabled = SubResource( 11 )
 custom_styles/normal = SubResource( 12 )
-custom_fonts/font = ExtResource( 2 )
 text = "Start"
