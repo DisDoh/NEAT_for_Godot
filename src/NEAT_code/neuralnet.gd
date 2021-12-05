@@ -61,7 +61,8 @@ func _init(neurons: Dictionary, links: Dictionary) -> void:
 				enabled_links.append(link)
 	# sort neurons such that they are evaluated left to right, feed_back
 	# and loop_back connections are however still delayed (that is desired)
-	hiddens.sort_custom(self, "sort_neurons_by_pos")
+	hiddens.sort_custom(self, "sort_neurons_by_posX")
+	hiddens.sort_custom(self, "sort_neurons_by_posY")
 	# if networks run on active, every neuron is updated once per update(), if they
 	# run snapshot, every n. is activ. often enough until inp. is flushed to outputs
 	depth = calculate_depth(hiddens)
@@ -114,7 +115,8 @@ func save_to_json(name: String) -> void:
 	network_data["depth"] = depth
 	# Save all neurons in sorted order
 	var sorted_neurons = all_neurons.values()
-	sorted_neurons.sort_custom(self, "sort_neurons_by_pos")
+	sorted_neurons.sort_custom(self, "sort_neurons_by_posX")
+	sorted_neurons.sort_custom(self, "sort_neurons_by_posY")
 	var neuron_data = []
 	for neuron in sorted_neurons:
 		var neuron_save = {
@@ -152,7 +154,13 @@ func save_to_json(name: String) -> void:
 	file.close()
 
 
-func sort_neurons_by_pos(neuron1, neuron2) -> bool:
+func sort_neurons_by_posX(neuron1, neuron2) -> bool:
+	"""Order neurons according to their x position in the network.
+	"""
+	return neuron1.position.x < neuron2.position.x
+
+
+func sort_neurons_by_posY(neuron1, neuron2) -> bool:
 	"""Order neurons according to their x position in the network.
 	"""
 	return neuron1.position.y < neuron2.position.y

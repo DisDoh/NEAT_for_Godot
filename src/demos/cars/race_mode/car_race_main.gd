@@ -146,12 +146,9 @@ func start_new_race() -> void:
 		opponent_names.append(opponent.car.name)
 	# if the race is restarted, delete all previous children nodes
 	for child in get_children():
-		if child.name == "GameOverSplash":
+		if "GameOverSplash" in child.name:
 			child.queue_free()
-		elif !child.is_blocking_signals():
-			child.free()
 		else:
-			yield(get_tree().create_timer(0.5),"timeout")
 			child.free()
 	# start a new race
 	setup_race(curr_track_num, opponent_names)
